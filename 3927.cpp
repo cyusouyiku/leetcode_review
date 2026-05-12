@@ -50,3 +50,51 @@ public:
         return totalSum;
     }
 };
+
+
+
+//灵神优化算法如下：其实就是把每个数的因子先从小到大放出来，然后再一个一个遍历，其实就是空间换时间，空间就是每个因子。
+constexpr int MX = 100'001;
+vector<int> divisors[MX];
+
+int init = [] {
+    for (int i = 1; i < MX; i++) {
+        for (int j = i; j < MX; j += i) { // 枚举 i 的倍数 j
+            divisors[j].push_back(i); // i 是 j 的因子
+        }
+    }
+    return 0;
+}();
+
+class Solution {
+public:
+    long long minArraySum(vector<int>& nums) {
+        unordered_map<int, int> cnt;
+        for (int x : nums) {
+            cnt[x]++;
+        }
+
+        long long ans = 0;
+        for (auto& [x, c] : cnt) { // 遍历 cnt 而不是 nums，这样重复元素只会计算一次
+            for (int d : divisors[x]) { // 从小到大枚举 x 的因子 d
+                if (cnt.contains(d)) {
+                    ans += 1LL * d * c; // 把 x 变成 d 是最优的
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
